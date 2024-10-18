@@ -1,5 +1,6 @@
 # Lithium Backup Merger
-This simple web app allows for the merging of annotations and bookmarks from multiple Lithium app backups. It provides a way to recover lost annotations and bookmarks by selecting which data to keep from each backup.
+
+A simple web app that can merge annotations and bookmarks from multiple Lithium app backups. It provides a way select which data to keep from each backup.
 
 All information about the app, including usage instructions, can be found on the website: [link](https://i123iu.github.io/lithium-backup-merger/)
 
