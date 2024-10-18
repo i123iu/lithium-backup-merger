@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- Title and icon-->
+    <title>Lithium Backup Merger</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.webp" />
+
+    <!-- Bootstrap css -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Page info section -->
+    <section class="my-5 container">
+      <!-- Icon -->
+      <div class="d-flex justify-content-center">
+        <img
+          src="favicon.webp"
+          class="rounded-4"
+          style="width: 72px; height: 72px"
+        />
+      </div>
+
+      <h1 class="flex-fill text-center my-3">Lithium Backup Merger</h1>
+      <p>
+        This simple web app allows for the merging of annotations and bookmarks
+        from multiple Lithium app backups. It provides a way to recover lost
+        annotations and bookmarks by selecting which data to keep from each
+        backup.
+      </p>
+
+      <h3>Lithium</h3>
+      <p>
+        Lithium ("Lithium: EPUB Reader") is an Android e-book reader that
+        supports text highlighting and bookmarks. It is available on
+        <a
+          href="https://play.google.com/store/apps/details?id=com.faultexception.reader"
+          >Google Play</a
+        >.
+      </p>
+
+      <h3>Disclaimer</h3>
+      <p>
+        I cannot guarantee that this app will work every time, so you should
+        create a backup before using it.
+        <br />
+        To create a backup, go to
+        <b>Settings > Backups > Create new backup</b>
+        <br />
+        This app is not affiliated with the original Lithium EPUB Reader app.
+      </p>
+
+      <h3>Motivation</h3>
+      <p>
+        This app is useful when annotations or bookmarks are missing from a book
+        but are still saved in an earlier backup.
+        <br />
+        This situation can happen if you accidentally delete a book and only
+        discover the loss after some time.
+      </p>
+    </section>
+
+    <!-- File selection section -->
+    <section class="my-5 container">
+      <h2 class="text-center my-3">1. File selection</h2>
+
+      <!-- Info -->
+      <p class="mb-0">
+        Select the backup files (.libak) you want to merge (found in
+        <b>Phone/LithiumBackups/</b>).
+      </p>
+      <p class="mb-0">
+        You can also select all your .epub books to display their names later.
+      </p>
+      <p class="mb-0">
+        (Book names are not included in the backup file, so you will see
+        unreadable names like "905e73f7..." otherwise.)
+      </p>
+      <p class="mb-0">
+        (All processing is done locally, and no data is uploaded.)
+      </p>
+
+      <div class="d-flex d-row text-nowrap gap-2 my-2">
+        <!-- File selection button -->
+        <label for="files-input" class="btn btn-outline-primary">
+          Choose files
+        </label>
+
+        <!-- File selection -->
+        <input
+          type="file"
+          accept=".libak,.epub"
+          id="files-input"
+          multiple
+          hidden
+        />
+
+        <!-- Clear output button -->
+        <button class="btn btn-secondary" id="files-log-clear">
+          Clear log
+        </button>
+      </div>
+
+      <!-- </div> -->
+
+      <!-- Files log -->
+      <ul id="files-logs-parent" class="list-group list-group-flush my-1"></ul>
+    </section>
+
+    <!-- Main table section -->
+    <section class="my-5 container">
+      <!-- Title -->
+      <h2 class="text-center my-3">2. Books</h2>
+
+      <!-- Info -->
+      <p class="mb-0">
+        In the first row, select the backup from which to take themes and
+        categories. If you're unsure, choose the most recent one.
+      </p>
+      <p class="mb-0">
+        For each row (book) in the table below, select the backup from which you
+        want to copy the annotations and bookmarks.
+      </p>
+
+      <!-- Table -->
+      <div class="table-responsive container my-3" style="width: min-content">
+        <table
+          id="table-table"
+          class="table align-middle table-striped table-bordered text-center"
+        >
+          <!-- Header -->
+          <thead>
+            <tr id="table-headers-parent" class="align-middle">
+              <th>Selection</th>
+            </tr>
+          </thead>
+
+          <!-- Rows = Books -->
+          <tbody id="table-rows-parent" class="table-group-divider">
+            <tr id="table-headers-parent-2" class="align-middle">
+              <th>Themes and categories</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Export section -->
+    <section class="my-5 container">
+      <h2 class="text-center">3. Export</h2>
+
+      <!-- Info -->
+      <p class="mb-0">
+        Export, download, and copy the file back to your device.
+      </p>
+      <p class="mb-0">
+        To apply the new backup, go to <b>Settings > Backups</b> and select the
+        downloaded file.
+      </p>
+
+      <div class="d-flex flex-row align-items-center gap-2 mt-2">
+        <!-- Export button -->
+        <button class="btn btn-primary my-1" id="export-button">Export</button>
+
+        <!-- Export status -->
+        <span class="align-middle text-success d-none" id="export-status"
+          >Success.
+        </span>
+      </div>
+    </section>
+
+    <!-- Protobuf.js -->
+    <script src="https://cdn.jsdelivr.net/npm/protobufjs@7.4.0/dist/protobuf.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
+      integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- JSZip -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+      integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- MD-5 Hasher -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/spark-md5/3.0.2/spark-md5.min.js"
+      integrity="sha512-iWbxiCA4l1WTD0rRctt/BfDEmDC5PiVqFc6c1Rhj/GKjuj6tqrjrikTw3Sypm/eEgMa7jSOS9ydmDlOtxJKlSQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- JQuery -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <!-- Custom -->
+    <script src="js/main.js"></script>
+    <script src="js/files.js"></script>
+    <script src="js/libak.js"></script>
+    <script src="js/table.js"></script>
+    <script src="js/export.js"></script>
+  </body>
+</html>

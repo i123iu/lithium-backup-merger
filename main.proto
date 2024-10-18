@@ -1,0 +1,81 @@
+// Decompiled from lithium .apk file
+
+syntax = "proto2";
+
+package lithium_extractor;
+
+message Root {
+  required int32 versionCode = 1;
+  required string versionName = 2;
+  repeated Book books = 3;
+  repeated Theme themes = 4;
+  repeated Category categories = 5;
+
+  message Book {
+    required string hash = 1;
+    required string currentPosition = 2;
+    required bool hidden = 3;
+    required int64 addedDate = 4;
+    required int64 lastOpenDate = 5;
+    required int32 libraryVersion = 6;
+    repeated Annotation annotations = 7;
+    repeated Bookmark bookmarks = 8;
+    required int64 groupAddedDate = 9;
+
+    message Annotation {
+      required string url = 1;
+      required string range = 2;
+      required int32 type = 3;
+      required string text = 4;
+      required string sectionTitle = 5;
+      required int32 color = 6;
+      required string note = 7;
+      required int64 createdDate = 8;
+      required int64 editedDate = 9;
+      required string syncId = 10;
+      required int64 typeTimestamp = 11;
+      required int64 colorTimestamp = 12;
+      required int64 noteTimestamp = 13;
+    }
+
+    message Bookmark {
+      required string position = 1;
+      required string sectionTitle = 2;
+      required int32 page = 3;
+      required int64 timestamp = 4;
+      required string syncId = 5;
+    }
+  }
+
+  message Theme {
+    required string name = 1;
+    required int64 createdDate = 2;
+    required int64 modifiedDate = 3;
+    required bool builtIn = 4;
+    required bool hidden = 5;
+    required int32 position = 6;
+    required int32 bgColor = 7;
+    required int32 textColor = 8;
+    required int32 linkColor = 9;
+    required bool useDarkChrome = 10;
+    required string syncId = 11;
+    required int64 bgColorTimestamp = 12;
+    required int64 textColorTimestamp = 13;
+    required int64 linkColorTimestamp = 14;
+    required int64 useDarkChromeTimestamp = 15;
+  }
+
+  message Category {
+    required string name = 1;
+    required int64 createdDate = 2;
+    repeated string bookHash = 3;
+    required string syncId = 4;
+    required int64 modifiedDate = 5;
+    repeated BookCategoryLink bookLink = 6;
+
+    message BookCategoryLink {
+      required string syncId = 1;
+      required string bookHash = 2;
+    }
+  }
+}
