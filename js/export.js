@@ -47,7 +47,7 @@ export_button.addEventListener("click", async () => {
 
   try {
     const libak = await libakExport(payload);
-    const blob = new Blob([libak]);
+    const blob = new Blob([libak], { type: "application/octet-stream" });
 
     // Create a temporary <a> element
     const link = document.createElement("a");
